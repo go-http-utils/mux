@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/go-http-utils/headers"
 	"github.com/stretchr/testify/suite"
 )
 
@@ -82,6 +83,40 @@ func (s *MuxSuite) TestMethods() {
 			s.Equal([]byte("123"), getResRawBody(res))
 		}
 	}
+}
+
+func (s *MuxSuite) TestNotAllowed() {
+	req, err := http.NewRequest("TEST", s.server.URL+"/123", nil)
+
+	s.Nil(err)
+
+	res, err := sendRequest(req)
+
+	s.Nil(err)
+	s.Equal(http.StatusMethodNotAllowed, res.StatusCode)
+}
+
+func (s *MuxSuite) TestNotFound() {
+	req, err := http.NewRequest(http.MethodGet, s.server.URL+"/123/test", nil)
+
+	s.Nil(err)
+
+	res, err := sendRequest(req)
+
+	s.Nil(err)
+	s.Equal(http.StatusNotFound, res.StatusCode)
+}
+
+func (s *MuxSuite) TestOptions() {
+	req, err := http.NewRequest(http.MethodOptions, s.server.URL+"/get/123", nil)
+
+	s.Nil(err)
+
+	res, err := sendRequest(req)
+
+	s.Nil(err)
+	s.Equal(http.StatusNoContent, res.StatusCode)
+	s.Equal("GET", res.Header.Get(headers.Allow))
 }
 
 func TestMux(t *testing.T) {

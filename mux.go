@@ -83,7 +83,6 @@ func (m Mux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 
 	if method == http.MethodOptions {
 		allows := []string{}
-		res.WriteHeader(http.StatusNoContent)
 
 		for m, n := range m.root {
 			if _, _, ok := n.Match(uri); ok {
@@ -92,7 +91,7 @@ func (m Mux) ServeHTTP(res http.ResponseWriter, req *http.Request) {
 		}
 
 		res.Header().Add(headers.Allow, strings.Join(allows, ", "))
-
+		res.WriteHeader(http.StatusNoContent)
 		return
 	}
 
