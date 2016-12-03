@@ -9,9 +9,9 @@ import (
 )
 
 // Version is this package's version number.
-const Version = "0.0.2"
+const Version = "0.1.0"
 
-// Handler responds to a HTTP request.
+// Handler likes the http.Handler but with the URL named params support.
 type Handler interface {
 	ServeHTTP(http.ResponseWriter, *http.Request, map[string]string)
 }
